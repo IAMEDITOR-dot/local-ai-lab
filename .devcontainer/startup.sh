@@ -1,15 +1,30 @@
 #!/bin/bash
 
-# Install Ollama
-curl -fsSL https://ollama.com/install.sh | sh
+set -e
 
-# Pull a SMALL model that won't cry on CPU
-ollama pull llama3:8b
+# dependencies
+sudo apt-get update
+sudo apt-get install -y zstd curl docker.io
 
-# Install OpenWebUI
+# start docker
+sudo service docker start
+
+# install ollama if missing
+if ! command -v ollama &> /dev/null; then
+  curl -fsSL https://ollama.com/install.sh | sh
+fi
+
+# start ollama in background
+nohup ollama serve > ollama.log 2>&1 &
+
+sleep 5
+
+# pull a small fast model
+ollama pull tinyllama
+
+# start OpenWebUI
 docker run -d \
   -p 3000:8080 \
-  --add-host=host.docker.internal:host-gateway \
   -v open-webui:/app/backend/data \
   --name open-webui \
   --restart always \
