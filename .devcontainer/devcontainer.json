@@ -1,9 +1,6 @@
 {
-  "name": "Local AI Lab",
+  "name": "AI Codespace",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-  "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
-  },
-  "forwardPorts": [3000, 11434],
-  "postCreateCommand": "bash .devcontainer/startup.sh"
+  "postCreateCommand": "bash .devcontainer/startup.sh",
+  "forwardPorts": [8081, 11434]
 }

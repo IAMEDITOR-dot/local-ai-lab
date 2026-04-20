@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Local AI</title>
+
+<style>
+body {
+  font-family: Arial;
+  background:#0f172a;
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+#chat {
+  width:600px;
+  height:80vh;
+  background:#111827;
+  border-radius:12px;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+}
+
+#messages {
+  flex:1;
+  overflow-y:auto;
+}
+
+.bubble {
+  padding:10px 14px;
+  margin:10px;
+  border-radius:16px;
+  max-width:70%;
+}
+
+.user {
+  background:#2563eb;
+  align-self:flex-end;
+}
+
+.ai {
+  background:#374151;
+  align-self:flex-start;
+}
+
+#inputArea {
+  display:flex;
+  margin-top:10px;
+}
+
+input {
+  flex:1;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+}
+
+button {
+  margin-left:10px;
+  padding:10px 15px;
+  border:none;
+  border-radius:8px;
+  background:#10b981;
+  color:white;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+<div id="chat">
+  <div id="messages"></div>
+
+  <div id="inputArea">
+    <input id="msg" placeholder="Message your AI..." />
+    <button onclick="send()">Send</button>
+  </div>
+</div>
+
+<script>
+async function send(){
+  let input = document.getElementById("msg");
+  let text = input.value;
+  if(!text) return;
+
+  addBubble(text,"user");
+  input.value="";
+
+  let res = await fetch("/api/chat",{
+    method:"POST",
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({message:text})
+  });
+
+  let data = await res.json();
+  addBubble(data.reply,"ai");
+}
+
+function addBubble(text,type){
+  let div=document.createElement("div");
+  div.className="bubble "+type;
+  div.innerText=text;
+  document.getElementById("messages").appendChild(div);
+}
+</script>
+</body>
+</html>
